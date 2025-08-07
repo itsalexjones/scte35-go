@@ -47,7 +47,7 @@ func (sd *AudioDescriptor) Tag() uint32 {
 }
 
 // decode updates this SpliceDescriptor from binary.
-func (sd *AudioDescriptor) decode(b []byte) error {
+func (sd *AudioDescriptor) Decode(b []byte) error {
 	r := iobit.NewReader(b)
 	r.Skip(8)  // splice_descriptor_tag
 	r.Skip(8)  // descriptor_length
@@ -72,8 +72,8 @@ func (sd *AudioDescriptor) decode(b []byte) error {
 }
 
 // encode this SpliceDescriptor to binary.
-func (sd *AudioDescriptor) encode() ([]byte, error) {
-	length := sd.length()
+func (sd *AudioDescriptor) Encode() ([]byte, error) {
+	length := sd.Length()
 
 	// add 2 bytes to contain splice_descriptor_tag & descriptor_length
 	buf := make([]byte, length+2)
@@ -94,7 +94,7 @@ func (sd *AudioDescriptor) encode() ([]byte, error) {
 }
 
 // descriptorLength returns the descriptor_length
-func (sd *AudioDescriptor) length() int {
+func (sd *AudioDescriptor) Length() int {
 	length := 32 // identifier
 	length += 4  // audio_count
 	length += 4  // reserved
@@ -108,7 +108,7 @@ func (sd *AudioDescriptor) length() int {
 func (sd *AudioDescriptor) writeTo(t *table) {
 	t.row(0, "audio_descriptor() {", nil)
 	t.row(1, "splice_descriptor_tag", fmt.Sprintf("%#02x", sd.Tag()))
-	t.row(1, "descriptor_length", sd.length())
+	t.row(1, "descriptor_length", sd.Length())
 	t.row(1, "identifier", fmt.Sprintf("%#08x, (%s)", CUEIdentifier, CUEIASCII))
 	t.row(1, "audio_count", len(sd.AudioChannels))
 	for i, ac := range sd.AudioChannels {

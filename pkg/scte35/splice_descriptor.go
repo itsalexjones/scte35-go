@@ -66,9 +66,9 @@ func NewSpliceDescriptor(identifier uint32, tag uint32) SpliceDescriptor {
 // splice_descriptor_tag.
 type SpliceDescriptor interface {
 	Tag() uint32
-	decode(b []byte) error
-	encode() ([]byte, error)
-	length() int // named to differentiate from splice_command
+	Decode(b []byte) error
+	Encode() ([]byte, error)
+	Length() int // named to differentiate from splice_command
 	writeTo(t *table)
 }
 
@@ -92,7 +92,7 @@ func (sds *SpliceDescriptors) UnmarshalJSON(data []byte) error {
 		Type       uint32 `json:"type"`
 	}
 
-	// decode each item
+	// Decode each item
 	for i := range items {
 		sdt := sdtype{Identifier: CUEIdentifier}
 		if err := json.Unmarshal(items[i], &sdt); err != nil {
@@ -138,7 +138,7 @@ func (sds *SpliceDescriptors) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		return fmt.Errorf("unsupported splice_descriptor tag: %s", start.Name.Local)
 	}
 
-	// decode it
+	// Decode it
 	if err := d.DecodeElement(&sd, &start); err != nil {
 		return err
 	}
@@ -168,7 +168,7 @@ func decodeSpliceDescriptors(b []byte) ([]SpliceDescriptor, error) {
 		// Decode the full splice_descriptor (including splice_descriptor_tag
 		// and descriptor_length).
 		sd := NewSpliceDescriptor(identifier, spliceDescriptorTag)
-		if derr := sd.decode(r.Bytes(descriptorLength + 2)); derr != nil {
+		if derr := sd.Decode(r.Bytes(descriptorLength + 2)); derr != nil {
 			// Store the error but continue decoding the rest of the signal.
 			err = derr
 		}

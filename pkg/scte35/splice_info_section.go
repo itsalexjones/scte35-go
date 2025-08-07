@@ -101,7 +101,7 @@ func (sis *SpliceInfoSection) Decode(b []byte) (err error) {
 	spliceCommandType := r.Uint32(8)
 	switch spliceCommandLength {
 	case 0xFFF:
-		// legacy signal, decode and skip (buffer underflow expected here)
+		// legacy signal, Decode and skip (buffer underflow expected here)
 		r2 := r.Peek()
 		sis.SpliceCommand, err = decodeSpliceCommand(spliceCommandType, r2.LeftBytes())
 		if err != nil && !errors.Is(err, ErrBufferUnderflow) {
@@ -109,7 +109,7 @@ func (sis *SpliceInfoSection) Decode(b []byte) (err error) {
 		}
 		r.Skip(uint(sis.SpliceCommand.length() * 8))
 	default:
-		// standard signal, decode as usual
+		// standard signal, Decode as usual
 		sis.SpliceCommand, err = decodeSpliceCommand(spliceCommandType, r.Bytes(spliceCommandLength))
 		if err != nil {
 			return err
@@ -280,7 +280,7 @@ func (sis *SpliceInfoSection) Encode() ([]byte, error) {
 
 	iow.PutUint32(16, uint32(sis.descriptorLoopLength()))
 	for _, sd := range sis.SpliceDescriptors {
-		sde, err := sd.encode()
+		sde, err := sd.Encode()
 		if err != nil {
 			return buf, err
 		}
@@ -478,7 +478,7 @@ func (sis *SpliceInfoSection) descriptorLoopLength() int {
 	for _, d := range sis.SpliceDescriptors {
 		length += 8              // splice_descriptor_tag
 		length += 8              // descriptor_length
-		length += d.length() * 8 // splice_descriptor()
+		length += d.Length() * 8 // splice_descriptor()
 	}
 	return length / 8
 }
@@ -537,7 +537,7 @@ func (i *iSIS) SpliceCommand() SpliceCommand {
 		return nil
 	}
 
-	// and decode it
+	// and Decode it
 	sc := NewSpliceCommand(st.Type)
 	if err := json.Unmarshal(i.SpliceCommandRaw, sc); err != nil {
 		Logger.Printf("error unmarshalling splice command: %s", err)

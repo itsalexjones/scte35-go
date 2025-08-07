@@ -121,7 +121,7 @@ func NewSegmentationUPID(upidType uint32, buf []byte) SegmentationUPID {
 		}
 	// everything else - plain text
 	default:
-		// decode troublesome Latin1 characters to their UTF8 equivalents
+		// Decode troublesome Latin1 characters to their UTF8 equivalents
 		b, _ := charmap.ISO8859_1.NewDecoder().Bytes(r.LeftBytes())
 		return SegmentationUPID{
 			Type:   upidType,
@@ -295,7 +295,7 @@ func (upid *SegmentationUPID) valueBytes() []byte {
 		return b
 	// everything else - plain text
 	default:
-		// encode UTF8 values as Latin1 (reversing the Decode above)
+		// Encode UTF8 values as Latin1 (reversing the Decode above)
 		b, _ := charmap.ISO8859_1.NewEncoder().Bytes([]byte(upid.Value))
 		return b
 	}

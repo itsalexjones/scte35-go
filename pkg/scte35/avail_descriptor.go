@@ -52,14 +52,14 @@ func (sd *AvailDescriptor) Tag() uint32 {
 func (sd *AvailDescriptor) writeTo(t *table) {
 	t.row(0, "avail_descriptor() {", nil)
 	t.row(1, "splice_descriptor_tag", fmt.Sprintf("%#02x", AvailDescriptorTag))
-	t.row(1, "descriptor_length", sd.length())
+	t.row(1, "descriptor_length", sd.Length())
 	t.row(1, "identifier", fmt.Sprintf("%#08x, (%s)", CUEIdentifier, CUEIASCII))
 	t.row(1, "provider_avail_id", sd.ProviderAvailID)
 	t.row(0, "}", nil)
 }
 
 // decode updates this splice_descriptor from binary.
-func (sd *AvailDescriptor) decode(b []byte) error {
+func (sd *AvailDescriptor) Decode(b []byte) error {
 	r := iobit.NewReader(b)
 	r.Skip(8)  // splice_descriptor_tag
 	r.Skip(8)  // descriptor_length
@@ -73,8 +73,8 @@ func (sd *AvailDescriptor) decode(b []byte) error {
 }
 
 // encode this splice_descriptor to binary.
-func (sd *AvailDescriptor) encode() ([]byte, error) {
-	length := sd.length()
+func (sd *AvailDescriptor) Encode() ([]byte, error) {
+	length := sd.Length()
 	// add 2 bytes to contain splice_descriptor_tag & descriptor_length
 	buf := make([]byte, length+2)
 	iow := iobit.NewWriter(buf)
@@ -89,7 +89,7 @@ func (sd *AvailDescriptor) encode() ([]byte, error) {
 }
 
 // descriptorLength returns the descriptor_length
-func (sd *AvailDescriptor) length() int {
+func (sd *AvailDescriptor) Length() int {
 	length := 32 // identifier
 	length += 32 // provider_avail_id
 	return length / 8

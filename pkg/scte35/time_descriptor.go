@@ -53,7 +53,7 @@ func (sd *TimeDescriptor) Tag() uint32 {
 func (sd *TimeDescriptor) writeTo(t *table) {
 	t.row(0, "time_descriptor() {", nil)
 	t.row(1, "splice_descriptor_tag", fmt.Sprintf("%#02x", TimeDescriptorTag))
-	t.row(1, "descriptor_length", sd.length())
+	t.row(1, "descriptor_length", sd.Length())
 	t.row(1, "identifier", fmt.Sprintf("%#08x, (%s)", CUEIdentifier, CUEIASCII))
 	t.row(1, "tai_seconds", sd.TAISeconds)
 	t.row(1, "tai_ns", sd.TAINS)
@@ -62,7 +62,7 @@ func (sd *TimeDescriptor) writeTo(t *table) {
 }
 
 // decode updates this splice_descriptor from binary.
-func (sd *TimeDescriptor) decode(b []byte) error {
+func (sd *TimeDescriptor) Decode(b []byte) error {
 	r := iobit.NewReader(b)
 	r.Skip(8)  // splice_descriptor_tag
 	r.Skip(8)  // descriptor_length
@@ -75,8 +75,8 @@ func (sd *TimeDescriptor) decode(b []byte) error {
 }
 
 // encode this splice_descriptor to binary.
-func (sd *TimeDescriptor) encode() ([]byte, error) {
-	length := sd.length()
+func (sd *TimeDescriptor) Encode() ([]byte, error) {
+	length := sd.Length()
 
 	// add 2 bytes to contain splice_descriptor_tag & descriptor_length
 	buf := make([]byte, length+2)
@@ -93,7 +93,7 @@ func (sd *TimeDescriptor) encode() ([]byte, error) {
 }
 
 // descriptorLength returns descriptor_length.
-func (sd *TimeDescriptor) length() int {
+func (sd *TimeDescriptor) Length() int {
 	length := 32 // identifier
 	length += 48 // TAI_seconds
 	length += 32 // TAI_ns

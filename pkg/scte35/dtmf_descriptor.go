@@ -43,7 +43,7 @@ type DTMFDescriptor struct {
 func (sd *DTMFDescriptor) writeTo(t *table) {
 	t.row(0, "dtmf_descriptor() {", nil)
 	t.row(1, "splice_descriptor_tag", fmt.Sprintf("%#02x", DTMFDescriptorTag))
-	t.row(1, "descriptor_length", sd.length())
+	t.row(1, "descriptor_length", sd.Length())
 	t.row(1, "identifier", fmt.Sprintf("%#08x (%s)", CUEIdentifier, CUEIASCII))
 	t.row(1, "preroll", float32(sd.Preroll/10))
 	t.row(1, "dtmf_count", len(sd.DTMFChars))
@@ -59,7 +59,7 @@ func (sd *DTMFDescriptor) Tag() uint32 {
 }
 
 // decode updates this splice_descriptor from binary.
-func (sd *DTMFDescriptor) decode(b []byte) error {
+func (sd *DTMFDescriptor) Decode(b []byte) error {
 	r := iobit.NewReader(b)
 	r.Skip(8)  // splice_descriptor_tag
 	r.Skip(8)  // descriptor_length
@@ -76,8 +76,8 @@ func (sd *DTMFDescriptor) decode(b []byte) error {
 }
 
 // encode this splice_descriptor to binary.
-func (sd *DTMFDescriptor) encode() ([]byte, error) {
-	length := sd.length()
+func (sd *DTMFDescriptor) Encode() ([]byte, error) {
+	length := sd.Length()
 
 	// add 2 bytes to contain splice_descriptor_tag & descriptor_length
 	buf := make([]byte, length+2)
@@ -97,7 +97,7 @@ func (sd *DTMFDescriptor) encode() ([]byte, error) {
 }
 
 // descriptorLength returns the descriptor_length.
-func (sd *DTMFDescriptor) length() int {
+func (sd *DTMFDescriptor) Length() int {
 	length := 32                    // identifier
 	length += 8                     // preroll
 	length += 3                     // dtmf_count

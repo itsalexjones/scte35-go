@@ -48,7 +48,7 @@ func (sd *PrivateDescriptor) Tag() uint32 {
 }
 
 // decode updates this splice_descriptor from binary.
-func (sd *PrivateDescriptor) decode(b []byte) error {
+func (sd *PrivateDescriptor) Decode(b []byte) error {
 	r := iobit.NewReader(b)
 
 	sd.PrivateTag = r.Uint32(8)
@@ -65,8 +65,8 @@ func (sd *PrivateDescriptor) decode(b []byte) error {
 }
 
 // encode this splice_descriptor to binary.
-func (sd *PrivateDescriptor) encode() ([]byte, error) {
-	length := sd.length()
+func (sd *PrivateDescriptor) Encode() ([]byte, error) {
+	length := sd.Length()
 
 	// add 2 bytes to contain splice_descriptor_tag & descriptor_length
 	buf := make([]byte, length+2)
@@ -84,7 +84,7 @@ func (sd *PrivateDescriptor) encode() ([]byte, error) {
 }
 
 // descriptorLength returns the descriptor_length
-func (sd *PrivateDescriptor) length() int {
+func (sd *PrivateDescriptor) Length() int {
 	length := 32                       // identifier
 	length += len(sd.PrivateBytes) * 8 // private_bytes
 	return length / 8
@@ -94,7 +94,7 @@ func (sd *PrivateDescriptor) length() int {
 func (sd *PrivateDescriptor) writeTo(t *table) {
 	t.row(0, "private_descriptor() {", nil)
 	t.row(1, "splice_descriptor_tag", fmt.Sprintf("%#02x", sd.Tag()))
-	t.row(1, "descriptor_length", sd.length())
+	t.row(1, "descriptor_length", sd.Length())
 	t.row(1, "identifier", fmt.Sprintf("%#08x, (%s)", sd.Identifier, sd.IdentifierString()))
 	t.row(1, "private_bytes", fmt.Sprintf("%#0x", sd.PrivateBytes))
 	t.row(0, "}", nil)

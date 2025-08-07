@@ -842,14 +842,14 @@ func TestDecodeBase64(t *testing.T) {
 
 	for k, c := range commonDecodeTestcases {
 		t.Run(k, func(t *testing.T) {
-			// decode the binary
+			// Decode the binary
 			sis, err := scte35.DecodeBase64(c.base64)
 			require.ErrorIs(t, err, c.err)
 			if err != nil {
 				return
 			}
 
-			// test encode/decode XML
+			// test Encode/Decode XML
 			encodedXML := toXML(sis)
 			assert.Equal(t, toXML(&c.expected), encodedXML)
 			decodedXML := scte35.SpliceInfoSection{}
@@ -860,7 +860,7 @@ func TestDecodeBase64(t *testing.T) {
 				assert.Equal(t, c.base64, decodedXML.Base64())
 			}
 
-			// test encode/decode JSON
+			// test Encode/Decode JSON
 			encodedJSON := toJSON(sis)
 			assert.Equal(t, toJSON(&c.expected), encodedJSON)
 			decodedJSON := scte35.SpliceInfoSection{}
@@ -880,20 +880,20 @@ func TestDecodeBase64(t *testing.T) {
 func TestDecodeHex(t *testing.T) {
 	for k, c := range commonDecodeTestcases {
 		t.Run(k, func(t *testing.T) {
-			// decode the binary
+			// Decode the binary
 			sis, err := scte35.DecodeHex(c.hex)
 			require.ErrorIs(t, err, c.err)
 			if err != nil {
 				return
 			}
 
-			// test encode/decode XML
+			// test Encode/Decode XML
 			encodedXML := toXML(sis)
 			assert.Equal(t, toXML(&c.expected), encodedXML)
 			decodedXML := scte35.SpliceInfoSection{}
 			assert.NoError(t, xml.Unmarshal([]byte(encodedXML), &decodedXML))
 
-			// test encode/decode JSON
+			// test Encode/Decode JSON
 			encodedJSON := toJSON(sis)
 			assert.Equal(t, toJSON(&c.expected), encodedJSON)
 			decodedJSON := scte35.SpliceInfoSection{}
@@ -909,20 +909,20 @@ func TestDecodeBytes(t *testing.T) {
 				t.Skip("skipping test, does not apply to DecodeBytes")
 			}
 
-			// decode the binary
+			// Decode the binary
 			sis, err := scte35.DecodeBytes(c.bytes)
 			require.ErrorIs(t, err, c.err)
 			if err != nil {
 				return
 			}
 
-			// test encode/decode XML
+			// test Encode/Decode XML
 			encodedXML := toXML(sis)
 			assert.Equal(t, toXML(&c.expected), encodedXML)
 			decodedXML := scte35.SpliceInfoSection{}
 			assert.NoError(t, xml.Unmarshal([]byte(encodedXML), &decodedXML))
 
-			// test encode/decode JSON
+			// test Encode/Decode JSON
 			encodedJSON := toJSON(sis)
 			assert.Equal(t, toJSON(&c.expected), encodedJSON)
 			decodedJSON := scte35.SpliceInfoSection{}
